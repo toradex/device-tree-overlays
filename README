@@ -1,0 +1,33 @@
+Introduction
+============
+
+This repository contains Device Tree overlays.
+
+Current avalible and supported overlays
+=======================================
+
+Display
+---------------------------------------
+display_EDT5.7_parallel_res_touch.dts		-> 5.7 inch display proivded by Toradex https://developer.toradex.com/products/edt-display
+display_EDT7_parallel_res_touch.dts		-> 7 inch display proivded by Toradex https://developer.toradex.com/products/edt-display
+display_10.1_lvds_cap_touch.dts			-> 10.1 inch lvds display proivded by Toradex
+display_7_parallel_cap_touch.dts		-> Display with capacitive touch https://developer.toradex.com/products/capacitive-touch-display-7inch-parallel
+
+Touch controllers
+----------------------------------------
+touch_cap_apalis_evb.dts			-> touch controller for capacitive touch displays
+touch_cap_colibri_imx6_evb.dts                  -> touch controller for capaccitive touch display compatible with colibri-imx6 and evaluation board
+touch_cap_colibri_imx6_aster.dts                -> touch controller for capaccitive touch display compatible with colibri-imx6 and Aster board
+touch_cap_colibri_imx7_evb.dts                  -> touch controller for capaccitive touch display compatible with colibri-imx7 and evaluation board
+touch_cap_colibri_imx7_aster.dts                -> touch controller for capaccitive touch display compatible with colibri-imx7 and Aster board
+=======================================
+
+touch_cap_apalis_evb.dts
+	-> Compatible with
+		- display_10.1_lvds_cap_touch.dts
+		- display_7_parallel_cap_touch.dts
+
+
+touch_cap_colibri_imx6_evb.dts
+touch_cap_colibri_imx7_evb.dts
+	-> When applying this overlay device has to be powercycled

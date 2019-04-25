@@ -1,0 +1,50 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "toradex,colibri-imx7s";
+	fragment@0 {
+		target = <&i2c4>;
+		__overlay__ {
+			atmel_mxt_ts: atmel_mxt_ts@4a {
+			pinctrl-names = "default";
+                        pinctrl-0 = <&pinctrl_atmel_mxt_ts>;
+			compatible = "atmel,maxtouch";
+			reg = <0x4a>;
+			interrupt-parent = <&gpio1>;
+			interrupts = <9 2>;
+			reset-gpios = <&gpio1 10 0>;
+			status = "okay";
+			};
+		};
+	};
+	fragment@1 {
+		target = <&pwm2>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+	fragment@2 {
+		target = <&pwm3>;
+		__overlay__{
+			status = "disabled";
+		};
+	};
+	fragment@3 {
+		target = <&iomuxc_lpsr>;
+		__overlay__ {
+			pinctrl_atmel_mxt_ts: atmelmxttsgrp {	
+				fsl,pins = <
+					0x0018 0x0270 0x0000 0x0 0x0 0x59
+					0x001C 0x0274 0x0000 0x0 0x0 0x59
+				>;
+			};
+		};
+	};
+	fragment@4 {
+		target = <&uart1>;
+		__overlay__ {
+			pinctrl-0 = <&pinctrl_uart1 &pinctrl_uart1_ctrl1>;
+		};
+	};
+};

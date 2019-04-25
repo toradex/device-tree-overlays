@@ -1,0 +1,12 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+        compatible = "toradex,apalis_imx6q";
+        fragment@0 {
+                target-path = "/ldb";
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+};

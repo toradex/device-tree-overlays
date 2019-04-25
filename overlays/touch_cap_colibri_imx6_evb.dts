@@ -1,0 +1,31 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "toradex,colibri-imx6dl";
+	fragment@0 {
+		target = <&i2c3>;
+		__overlay__ {
+			atmel_mxt_ts: atmel_mxt_ts@4a {
+			compatible = "atmel,maxtouch";
+			reg = <0x4a>;
+			interrupt-parent = <&gpio1>;
+			interrupts = <9 2>;
+			reset-gpios = <&gpio2 10 0>;
+			status = "okay";
+			};
+		};
+	};
+	fragment@1 {
+		target = <&pwm1>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+	fragment@2 {
+		target = <&pwm4>;
+		__overlay__{
+			status = "disabled";
+		};
+	};
+};

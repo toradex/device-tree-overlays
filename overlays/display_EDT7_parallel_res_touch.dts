@@ -1,0 +1,24 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "toradex";
+	fragment@0 {
+		target-path = "/panel-dpi";
+		__overlay__ {
+			width-mm = <155>;
+			height-mm = <91>;
+			panel-timing {
+				clock-frequency = <33230769>;
+				hactive = <800>;
+				vactive = <480>;
+				hsync-len = <128>;
+				hfront-porch = <40>;
+				hback-porch = <88>;
+				vsync-len = <1>;
+				vfront-porch = <10>;
+				vback-porch = <33>;
+			};
+		};
+	};
+};
