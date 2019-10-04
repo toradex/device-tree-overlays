@@ -1,0 +1,199 @@
+// SPDX-License-Identifier: GPL-2.0+ OR X11
+/*
+ * Copyright 2018-2019 Toradex
+ */
+
+/dts-v1/;
+
+#include "fsl-imx8qxp-colibri.dtsi"
+
+/ {
+	model = "Toradex Colibri iMX8QXP/DX on Aster Board";
+	compatible = "toradex,colibri_imx8qxp-aster", \
+			"toradex,colibri-imx8qxp", "fsl,imx8qxp";
+
+	extcon_usbc_det: usbc_det {
+		compatible = "linux,extcon-usb-gpio";
+		debounce = <25>;
+		id-gpio = <&gpio5 9 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_usbc_det>;
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_keys>;
+
+		wakeup {
+			label = "Wake-Up";
+			gpios = <&gpio3 10 GPIO_ACTIVE_HIGH>;
+			linux,code = <KEY_WAKEUP>;
+			debounce-interval = <10>;
+			gpio-key,wakeup;
+		};
+	};
+
+	panel {
+		compatible = "edt,et070080dh6";
+		backlight = <&backlight>;
+		enable-gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
+
+		port {
+			lcd_panel_in: endpoint {
+				remote-endpoint = <&lcd_display_out>;
+			};
+		};
+	};
+
+	regulators {
+		reg_3v3: regulator-3v3 {
+			compatible = "regulator-fixed";
+			regulator-name = "3.3V";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+		};
+
+		reg_5v0: regulator-5v0 {
+			compatible = "regulator-fixed";
+			regulator-name = "5V";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+		};
+
+		reg_usbh_vbus: regulator-usbh-vbus {
+			compatible = "regulator-fixed";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_usbh1_reg>;
+			regulator-name = "usbh_vbus";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			gpio = <&gpio4 3 GPIO_ACTIVE_LOW>;
+			regulator-always-on;
+		};
+	};
+};
+
+&adma_lcdif {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lcdif>;
+	bus-width = <18>;
+	status = "okay";
+
+	port@0 {
+		lcd_display_out: lcdif-endpoint {
+			remote-endpoint = <&lcd_panel_in>;
+		};
+	};
+};
+
+&backlight {
+	brightness-levels = <0 45 63 88 119 158 203 255>;
+	default-brightness-level = <4>;
+	pwms = <&pwm_adma_lcdif 0 6666667 PWM_POLARITY_INVERTED>;
+	status = "okay";
+};
+
+/* Colibri I2C */
+&i2c1 {
+	status = "okay";
+
+	/* Atmel maxtouch controller */
+	atmel_mxt_ts: atmel_mxt_ts@4a {
+		compatible = "atmel,maxtouch";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_mxt_ts>;
+		reg = <0x4a>;
+		interrupt-parent = <&gpio3>;
+		interrupts = <20 IRQ_TYPE_EDGE_FALLING>;	/* SODIMM 107 */
+		reset-gpios = <&gpio3 24 GPIO_ACTIVE_HIGH>;	/* SODIMM 106 */
+		status = "okay";
+	};
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_hog0>, <&pinctrl_hog2>;
+
+	colibri-imx8qxp {
+		pinctrl_mxt_ts: mxt-ts {
+			fsl,pins = <
+				SC_P_QSPI0B_DATA2_LSIO_GPIO3_IO20	0x20	/* SODIMM 107 */
+				SC_P_QSPI0B_SS1_B_LSIO_GPIO3_IO24	0x20	/* SODIMM 106 */
+			>;
+		};
+
+		pinctrl_gpio_keys: gpiokeys {
+			fsl,pins = <
+				SC_P_QSPI0A_DATA1_LSIO_GPIO3_IO10	0x20	/* SODIMM  45 */
+			>;
+		};
+	};
+};
+
+/* Colibri SPI */
+&lpspi2 {
+	status = "okay";
+
+	spidev0: spidev@0 {
+		compatible = "toradex,evalspi";
+		reg = <0>;
+		spi-max-frequency = <10000000>;
+	};
+};
+
+/* Colibri PWM_B */
+&pwm0 {
+	status = "okay";
+};
+
+/* Colibri PWM_C */
+&pwm1 {
+	status = "okay";
+};
+
+/* Colibri PWM_D */
+&pwm2 {
+	status = "okay";
+};
+
+/* Colibri UART_C */
+&lpuart2 {
+	status = "okay";
+};
+
+/* Colibri UART_B */
+&lpuart0 {
+	status = "okay";
+};
+
+/* Colibri UART_A */
+&lpuart3 {
+	status = "okay";
+};
+
+&usdhc2 {
+	status = "okay";
+};
+
+/*
+ * Lower USB port, shared with micro-usb-connector
+ * The micro-usb connector may only be used in USB client mode.
+ */
+&usbotg1 {
+	extcon = <&extcon_usbc_det>;
+	vbus-supply = <&reg_usbh_vbus>;
+	srp-disable;
+	hnp-disable;
+	adp-disable;
+	power-polarity-active-high;
+	disable-over-current;
+	status = "okay";
+};
+
+/* Upper USB port */
+&usbotg3 {
+	dr_mode = "host";
+	status = "okay";
+};
+
