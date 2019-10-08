@@ -1,0 +1,15 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "toradex,apalis_imx8qm";
+
+	fragment@0 {
+		target-path="/lvds1_panel";
+		__overlay__ {
+			status = "okay";
+			compatible="toradex,captouch-101-lvds";
+			backlight=<&backlight>;
+		};
+	};
+};
