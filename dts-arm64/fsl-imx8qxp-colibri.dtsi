@@ -23,6 +23,47 @@
 		status = "disabled";
 	};
 
+	panel: panel {
+		/*
+		 * edt,et057090dhu: EDT 5.7" LCD TFT
+		 * edt,et070080dh6: EDT 7.0" LCD TFT
+		 * logictechno,lt161010-2nhc: Cap. Touch Display 7" Parallel
+		 * logictechno,lt161010-2nhr: Res. Touch Display 7" Parallel
+		 * logictechno,lt170410-2whc: Cap. Touch Display 10.1" LVDS
+		 * tpk,f07a-0102: Capacitive Multi-Touch Display Fusion 7"
+		 * tpk,f10a-0102: Capacitive Multi-Touch Display Fusion 10"
+		 */
+		compatible = "panel-dpi";
+		backlight = <&backlight>;
+		enable-gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
+		power-supply = <&reg_3v3>;
+
+		width-mm = <217>;
+		height-mm = <136>;
+
+		data-mapping = "bgr666";
+
+		panel-timing {
+			/* Default VESA VGA display timings */
+			clock-frequency = <25175000>;
+			hactive = <640>;
+			hback-porch = <48>;
+			hfront-porch = <16>;
+			hsync-len = <96>;
+			vactive = <480>;
+			vback-porch = <31>;
+			vfront-porch = <11>;
+			vsync-len = <2>;
+			pixelclk-active = <0>;
+		};
+
+		port {
+			lcd_panel_in: endpoint {
+				remote-endpoint = <&lcd_display_out>;
+			};
+		};
+	};
+
 	regulators {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -84,6 +125,27 @@
 	vref-supply = <&reg_vref_1v8>;
 };
 
+/* Colibri Parallel RGB */
+&adma_lcdif {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lcdif>;
+	bus-width = <18>;
+	status = "okay";
+
+	port@0 {
+		lcd_display_out: lcdif-endpoint {
+			remote-endpoint = <&lcd_panel_in>;
+		};
+	};
+};
+
+&backlight {
+	brightness-levels = <0 45 63 88 119 158 203 255>;
+	default-brightness-level = <4>;
+	pwms = <&pwm_adma_lcdif 0 6666667 PWM_POLARITY_INVERTED>;
+	status = "okay";
+};
+
 /* Colibri Ethernet */
 &fec1 {
 	pinctrl-names = "default", "sleep";
@@ -121,6 +183,13 @@
 &flexcan2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_flexcan2>;
+	xceiver-supply = <&reg_module_3v3>;
+};
+
+/* Colibri optional CAN on UART_A TXD/RXD */
+&flexcan3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexcan3>;
 	xceiver-supply = <&reg_module_3v3>;
 };
 
@@ -243,12 +312,24 @@
 	clock-frequency = <100000>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_i2c1>;
+
+	/* Atmel maxtouch controller */
+	atmel_mxt_ts: atmel_mxt_ts@4a {
+		compatible = "atmel,maxtouch";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_mxt_ts>;
+		reg = <0x4a>;
+		interrupt-parent = <&gpio3>;
+		interrupts = <20 IRQ_TYPE_EDGE_FALLING>;	/* SODIMM 107 */
+		reset-gpios = <&gpio3 24 GPIO_ACTIVE_HIGH>;	/* SODIMM 106 */
+                status = "disabled";
+        };
 };
 
 &iomuxc {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_hog0>, <&pinctrl_hog1>, <&pinctrl_hog2>,
-			<&pinctrl_ext_io0>;
+			<&pinctrl_ext_io0>, <&pinctrl_mxt_ts>;
 
 	colibri-imx8qxp {
 		/* On-module touch pen-down interrupt */
@@ -283,7 +364,7 @@
 
 		pinctrl_gpiokeys: gpiokeysgrp {
 			fsl,pins = <
-				SC_P_QSPI0A_DATA1_LSIO_GPIO3_IO10		0x20		/* SODIMM  45 */
+				SC_P_QSPI0A_DATA1_LSIO_GPIO3_IO10		0x06700041	/* SODIMM  45 */
 			>;
 		};
 
@@ -389,7 +470,6 @@
 				SC_P_SAI0_TXD_LSIO_GPIO0_IO25			0x20		/* SODIMM 103 */
 				SC_P_CSI_D01_CI_PI_D03				0x61		/* SODIMM 103 */
 				SC_P_QSPI0B_DATA1_LSIO_GPIO3_IO19		0x20		/* SODIMM 105 */
-				SC_P_QSPI0B_DATA2_LSIO_GPIO3_IO20		0x20		/* SODIMM 107 */
 				SC_P_USB_SS3_TC2_LSIO_GPIO4_IO05		0x20		/* SODIMM 127 */
 				SC_P_USB_SS3_TC3_LSIO_GPIO4_IO06		0x20		/* SODIMM 131 */
 				SC_P_USB_SS3_TC1_LSIO_GPIO4_IO04		0x20		/* SODIMM 133 */
@@ -398,7 +478,6 @@
 				SC_P_SAI1_RXFS_LSIO_GPIO0_IO31			0x20		/* SODIMM 100 */
 				SC_P_QSPI0B_DQS_LSIO_GPIO3_IO22			0x20		/* SODIMM 102 */
 				SC_P_QSPI0B_SS0_B_LSIO_GPIO3_IO23		0x20		/* SODIMM 104 */
-				SC_P_QSPI0B_SS1_B_LSIO_GPIO3_IO24		0x20		/* SODIMM 106 */
 			>;
 		};
 
@@ -448,6 +527,14 @@
 			fsl,pins = <
 				SC_P_FLEXCAN1_TX_ADMA_FLEXCAN1_TX		0x21		/* SODIMM  55 */
 				SC_P_FLEXCAN1_RX_ADMA_FLEXCAN1_RX		0x21		/* SODIMM  63 */
+			>;
+		};
+
+		/* Colibri optional CAN on UART_A TXD/RXD */
+		pinctrl_flexcan3: flexcan2grp {
+			fsl,pins = <
+				SC_P_FLEXCAN2_TX_ADMA_FLEXCAN2_TX		0x21		/* SODIMM  35 */
+				SC_P_FLEXCAN2_RX_ADMA_FLEXCAN2_RX		0x21		/* SODIMM  33 */
 			>;
 		};
 
@@ -720,6 +807,13 @@
 				SC_P_SCU_BOOT_MODE3_SCU_DSC_RTC_CLOCK_OUTPUT_32K 0x20
 			>;
 		};
+
+		pinctrl_mxt_ts: mxt-ts {
+			fsl,pins = <
+				SC_P_QSPI0B_DATA2_LSIO_GPIO3_IO20		0x20		/* SODIMM 107 */
+				SC_P_QSPI0B_SS1_B_LSIO_GPIO3_IO24		0x20		/* SODIMM 106 */
+			>;
+		};
 	};
 };
 
@@ -768,6 +862,10 @@
 
 /* On-module PCIe for wifi */
 &pcieb{
+/*
+ * WARNING! Enabling "epdev_on-supply" leads a crash of pcie driver on
+ * system suspend.
+ */
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_pcieb &pinctrl_wifi>;
 	ext_osc = <1>;
@@ -775,7 +873,6 @@
 	disable-gpio = <&gpio_expander_43 6 GPIO_ACTIVE_LOW>;
 	power-on-gpio = <&gpio_expander_43 2 GPIO_ACTIVE_LOW>;
 	reset-gpio = <&gpio4 0 GPIO_ACTIVE_LOW>;
-/*	epdev_on-supply = <&reg_wifi>;*/
 	fsl,max-link-speed = <1>;
 	status = "okay";
 };
@@ -878,13 +975,18 @@
 &usdhc2 {
 	bus-width = <4>;
 	cd-gpios = <&gpio3 9 GPIO_ACTIVE_LOW>;
-	vmmc-supply = <&reg_module_3v3>;
 	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
 	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
 	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
 	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
 	pinctrl-3 = <&pinctrl_usdhc2_sleep>, <&pinctrl_usdhc2_gpio_sleep>;
 	disable-wp;
+	/*
+	 * The PMIC on V1.0A HW generates 1.6V instead of 1.8V which creates
+	 * issues with certain SD cards, disable 1.8V signaling for now.
+	 */
+	no-1-8-v;
+	vmmc-supply = <&reg_module_3v3>;
 };
 
 &vpu_decoder {

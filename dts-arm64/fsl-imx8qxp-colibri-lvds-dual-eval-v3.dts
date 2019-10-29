@@ -31,6 +31,8 @@
 };
 
 &backlight {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_gpio_bklght_on>;
 	brightness-levels = <0 45 63 88 119 158 203 255>;
 	default-brightness-level = <4>;
 	enable-gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>; /* Ext.Conn 25: LVDS1_GPIO0_00 */
@@ -68,6 +70,10 @@
 };
 
 &gpu_3d0 {
+	status = "okay";
+};
+
+&imx8_gpu_ss {
 	status = "okay";
 };
 
@@ -119,6 +125,11 @@
 	status = "disabled";
 };
 
+/* On-module MIPI DSI accessible on FFC (X2) */
+&i2c0_mipi_lvds1 {
+	status = "disabled";
+};
+
 &ldb2_phy {
 	status = "okay";
 };
@@ -137,6 +148,10 @@
 
 &mipi_dsi_bridge2 {
 	status = "disabled";
+};
+
+&i2c1 {
+	status = "okay";
 };
 
 &pixel_combiner {
@@ -177,4 +192,14 @@
 
 &prg9 {
 	status = "okay";
+};
+
+/* Colibri PWM_B */
+&pwm0 {
+	status = "disabled";
+};
+
+/* Colibri PWM_C */
+&pwm1 {
+	status = "disabled";
 };

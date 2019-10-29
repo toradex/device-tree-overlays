@@ -12,6 +12,10 @@
 	compatible = "toradex,colibri_imx8qxp-aster", \
 			"toradex,colibri-imx8qxp", "fsl,imx8qxp";
 
+	display-subsystem {
+		status = "okay";
+	};
+
 	extcon_usbc_det: usbc_det {
 		compatible = "linux,extcon-usb-gpio";
 		debounce = <25>;
@@ -23,26 +27,14 @@
 	gpio-keys {
 		compatible = "gpio-keys";
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_gpio_keys>;
+		pinctrl-0 = <&pinctrl_gpiokeys>;
 
 		wakeup {
 			label = "Wake-Up";
 			gpios = <&gpio3 10 GPIO_ACTIVE_HIGH>;
 			linux,code = <KEY_WAKEUP>;
 			debounce-interval = <10>;
-			gpio-key,wakeup;
-		};
-	};
-
-	panel {
-		compatible = "edt,et070080dh6";
-		backlight = <&backlight>;
-		enable-gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
-
-		port {
-			lcd_panel_in: endpoint {
-				remote-endpoint = <&lcd_display_out>;
-			};
+			wakeup-source;
 		};
 	};
 
@@ -74,61 +66,40 @@
 	};
 };
 
-&adma_lcdif {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_lcdif>;
-	bus-width = <18>;
+/* Colibri Analogue Inputs */
+&adc0 {
 	status = "okay";
-
-	port@0 {
-		lcd_display_out: lcdif-endpoint {
-			remote-endpoint = <&lcd_panel_in>;
-		};
-	};
 };
 
-&backlight {
-	brightness-levels = <0 45 63 88 119 158 203 255>;
-	default-brightness-level = <4>;
-	pwms = <&pwm_adma_lcdif 0 6666667 PWM_POLARITY_INVERTED>;
+&atmel_mxt_ts {
+	status = "okay";
+};
+
+&dpu1 {
+	status = "okay";
+};
+
+/* Colibri Ethernet */
+&fec1 {
+	status = "okay";
+};
+
+&gpu_3d0 {
 	status = "okay";
 };
 
 /* Colibri I2C */
 &i2c1 {
 	status = "okay";
-
-	/* Atmel maxtouch controller */
-	atmel_mxt_ts: atmel_mxt_ts@4a {
-		compatible = "atmel,maxtouch";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_mxt_ts>;
-		reg = <0x4a>;
-		interrupt-parent = <&gpio3>;
-		interrupts = <20 IRQ_TYPE_EDGE_FALLING>;	/* SODIMM 107 */
-		reset-gpios = <&gpio3 24 GPIO_ACTIVE_HIGH>;	/* SODIMM 106 */
-		status = "okay";
-	};
 };
 
 &iomuxc {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_hog0>, <&pinctrl_hog2>;
+};
 
-	colibri-imx8qxp {
-		pinctrl_mxt_ts: mxt-ts {
-			fsl,pins = <
-				SC_P_QSPI0B_DATA2_LSIO_GPIO3_IO20	0x20	/* SODIMM 107 */
-				SC_P_QSPI0B_SS1_B_LSIO_GPIO3_IO24	0x20	/* SODIMM 106 */
-			>;
-		};
-
-		pinctrl_gpio_keys: gpiokeys {
-			fsl,pins = <
-				SC_P_QSPI0A_DATA1_LSIO_GPIO3_IO10	0x20	/* SODIMM  45 */
-			>;
-		};
-	};
+&imx8_gpu_ss {
+	status = "okay";
 };
 
 /* Colibri SPI */
@@ -140,6 +111,26 @@
 		reg = <0>;
 		spi-max-frequency = <10000000>;
 	};
+};
+
+/* Colibri UART_B */
+&lpuart0 {
+	status = "okay";
+};
+
+/* Colibri UART_C */
+&lpuart2 {
+	status = "okay";
+};
+
+/* Colibri UART_A */
+&lpuart3 {
+	status= "okay";
+};
+
+/* Colibri PWM_A */
+&pwm_adma_lcdif {
+	status = "okay";
 };
 
 /* Colibri PWM_B */
@@ -157,31 +148,12 @@
 	status = "okay";
 };
 
-/* Colibri UART_C */
-&lpuart2 {
-	status = "okay";
-};
-
-/* Colibri UART_B */
-&lpuart0 {
-	status = "okay";
-};
-
-/* Colibri UART_A */
-&lpuart3 {
-	status = "okay";
-};
-
-&usdhc2 {
-	status = "okay";
-};
-
 /*
  * Lower USB port, shared with micro-usb-connector
  * The micro-usb connector may only be used in USB client mode.
  */
 &usbotg1 {
-	extcon = <&extcon_usbc_det>;
+	extcon = <&extcon_usbc_det &extcon_usbc_det>;
 	vbus-supply = <&reg_usbh_vbus>;
 	srp-disable;
 	hnp-disable;
@@ -197,3 +169,19 @@
 	status = "okay";
 };
 
+/* Colibri SDCard */
+&usdhc2 {
+	status = "okay";
+};
+
+&vpu {
+	status = "okay";
+};
+
+&vpu_decoder {
+	status = "okay";
+};
+
+&vpu_encoder {
+	status = "okay";
+};

@@ -14,7 +14,7 @@
 	compatible = "toradex,colibri-imx8qxp-lvds-single-eval-v3", "toradex,colibri-imx8qxp", "fsl,imx8qxp";
 
 	lvds1_panel {
-		compatible = "toradex,captouch-101-lvds";
+		compatible = "logictechno,lt170410-2whc";
 		backlight = <&backlight>;
 
 		port {
@@ -30,7 +30,21 @@
 	status = "disabled";
 };
 
+/*
+ * Atmel maxtouch controller
+ * To enable it, you should disable pwm0 (PWM_B) and pwm1 (PWM_C)
+ */
+&atmel_mxt_ts {
+        pinctrl-0 = <&pinctrl_touch>;
+        interrupt-parent = <&gpio0>;
+        interrupts = <21 IRQ_TYPE_EDGE_FALLING>;        /* SODIMM 28 */
+        reset-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;     /* SODIMM 30 */
+	status = "okay";
+};
+
 &backlight {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_gpio_bklght_on>;
 	brightness-levels = <0 45 63 88 119 158 203 255>;
 	default-brightness-level = <4>;
 	enable-gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>; /* Ext.Conn 25: LVDS1_GPIO0_00 */
@@ -81,8 +95,8 @@
 	colibri-imx8qxp {
 		pinctrl_touch: touchgrp {
 			fsl,pins = <
-				SC_P_QSPI0B_DATA3_LSIO_GPIO3_IO21	0x06000040
-				SC_P_USB_SS3_TC1_LSIO_GPIO4_IO04	0x06000040
+				SC_P_UART1_TX_LSIO_GPIO0_IO21	0x06000040	/* SODIMM  28 */
+				SC_P_UART1_RX_LSIO_GPIO0_IO22	0x06000020	/* SODIMM  30 */
 			>;
 		};
 
@@ -155,17 +169,6 @@
 
 &i2c1 {
 	status = "okay";
-
-	atmel_mxt_ts: atmel_mxt_ts@4a {
-		compatible = "atmel,maxtouch";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_touch>;
-		reg = <0x4a>;
-		interrupt-parent = <&gpio3>;
-		interrupts = <21 IRQ_TYPE_EDGE_FALLING>;	/* SODIMM  98 */
-		reset-gpios = <&gpio4 4 GPIO_ACTIVE_HIGH>;	/* SODIMM 133 */
-		status = "okay";
-	};
 };
 
 &pixel_combiner {
@@ -206,4 +209,14 @@
 
 &prg9 {
 	status = "okay";
+};
+
+/* Colibri PWM_B */
+&pwm0 {
+	status = "disabled";
+};
+
+/* Colibri PWM_C */
+&pwm1 {
+	status = "disabled";
 };
