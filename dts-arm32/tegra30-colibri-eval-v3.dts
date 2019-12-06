@@ -95,6 +95,11 @@
 			vdd-supply = <&reg_3v3>;
 			xceiver-supply = <&reg_5v0>;
 		};
+		spidev0: spi@1 {
+			compatible = "spidev";
+			reg = <1>;
+			spi-max-frequency = <25000000>;
+		};
 	};
 
 	/* SD/MMC */

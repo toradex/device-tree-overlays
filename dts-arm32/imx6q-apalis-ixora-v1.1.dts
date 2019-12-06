@@ -164,6 +164,28 @@
 	status = "okay";
 };
 
+/* Apalis SPI1 */
+&ecspi1 {
+	status = "okay";
+
+	spidev0: spidev@1 {
+		compatible = "toradex,evalspi";
+		reg = <0>;
+		spi-max-frequency = <18000000>;
+	};
+};
+
+/* Apalis SPI2 */
+&ecspi2 {
+	status = "okay";
+
+	spidev1: spidev@2 {
+		compatible = "toradex,evalspi";
+		reg = <0>;
+		spi-max-frequency = <18000000>;
+	};
+};
+
 &hdmi {
 	status = "okay";
 };
