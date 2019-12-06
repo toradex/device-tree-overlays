@@ -167,7 +167,7 @@
 &ecspi1 {
 	status = "okay";
 
-	spidev0: spidev@1 {
+	spidev0: spidev@0 {
 		compatible = "toradex,evalspi";
 		reg = <0>;
 		spi-max-frequency = <18000000>;
@@ -178,7 +178,7 @@
 &ecspi2 {
 	status = "okay";
 
-	spidev1: spidev@2 {
+	spidev1: spidev@0 {
 		compatible = "toradex,evalspi";
 		reg = <0>;
 		spi-max-frequency = <18000000>;
