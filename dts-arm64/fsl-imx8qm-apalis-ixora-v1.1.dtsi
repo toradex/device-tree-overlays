@@ -9,8 +9,36 @@
 		rtc1 = &rtc;
 	};
 
+	leds {
+		compatible = "gpio-leds";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_leds_ixora>;
+
+		/* MXM3_188 */
+		led4-green {
+			label = "LED_4_GREEN";
+			gpios = <&gpio5 27 GPIO_ACTIVE_HIGH>;
+		};
+		/* MXM3_178 */
+		led4-red {
+			label = "LED_4_RED";
+			gpios = <&gpio5 29 GPIO_ACTIVE_HIGH>;
+		};
+		/* MXM3_152 */
+		led5-green {
+			label = "LED_5_GREEN";
+			gpios = <&gpio5 20 GPIO_ACTIVE_HIGH>;
+		};
+		/* MXM3_156 */
+		led5-red {
+			label = "LED_5_RED";
+			gpios = <&gpio5 21 GPIO_ACTIVE_HIGH>;
+		};
+	};
+
 	reg_usb_host_vbus: regulator-usb-host-vbus {
-		regulator-name = "VCC USBH2(ABCD) / USBH(3|4)";
+		regulator-name = "VCC_USBH(2|4)";
 	};
 };
 
@@ -109,15 +137,16 @@
 	status = "okay";
 };
 
-&gpio2 {
-	/*
-	 * Add GPIO2_20 as a wakeup source:
-	 * Pin:  SC_P_SPI3_CS0 (MXM3_37/WAKE1_MICO)
-	 * Type: SC_PAD_WAKEUP_FALL_EDGE
-	 * Line: 20
-	 */
-	 pad-wakeup = <101 5 20>;
-	 pad-wakeup-num = <1>;
+&gpio5 {
+	ngpios = <32>;
+	gpio-line-names = "gpio5-01", "gpio5-02", "gpio5-03", "gpio5-04",
+			  "gpio5-05", "gpio5-06", "gpio5-07", "gpio5-08",
+			  "gpio5-09", "gpio5-10", "gpio5-11", "gpio5-12",
+			  "gpio5-13", "gpio5-14", "gpio5-15", "gpio5-16",
+			  "gpio5-17", "gpio5-18", "gpio5-19", "LED-5-GREEN",
+			  "LED-5-RED", "gpio5-22", "gpio5-23", "gpio5-24",
+			  "UART24-FORCEOFF", "gpio5-26", "LED-4-GREEN", "gpio5-28",
+			  "LED-4-RED", "gpio5-30", "gpio5-31", "gpio5-32";
 };
 
 &gpu_3d0 {
@@ -159,7 +188,7 @@
 	};
 };
 
-/* Apalis I2C3 (CAM) */
+/* Apalis I2C_CAM1 */
 &i2c3 {
 	status = "okay";
 
@@ -196,6 +225,26 @@
 
 &intmux_cm41 {
 	status = "okay";
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart24_forceoff>;
+
+	pinctrl_leds_ixora: ledsixoragrp {
+		fsl,pins = <
+			SC_P_USDHC2_DATA1_LSIO_GPIO5_IO27 0x41 /* LED_4_GREEN */
+			SC_P_USDHC2_DATA3_LSIO_GPIO5_IO29 0x41 /* LED_4_RED */
+			SC_P_USDHC1_DATA5_LSIO_GPIO5_IO20 0x41 /* LED_5_GREEN */
+			SC_P_USDHC1_DATA6_LSIO_GPIO5_IO21 0x41 /* LED_5_RED */
+		>;
+	};
+
+	pinctrl_uart24_forceoff: uart24forceoffgrp {
+		fsl,pins = <
+			SC_P_USDHC2_CMD_LSIO_GPIO5_IO25 0x21
+		>;
+	};
 };
 
 &irqsteer_hdmi {
@@ -420,7 +469,7 @@
 	status = "okay";
 };
 
-/* Apalis USBH2, Apalis USBH3 and on-module Wi-Fi via on-module HSIC Hub */
+/* Apalis USBH2, Apalis USBH3 */
 &usbh1 {
 	vbus-supply = <&reg_usb_host_vbus>;
 	status = "okay";
@@ -440,11 +489,6 @@
 
 /* Apalis MMC1 */
 &usdhc2 {
-	status = "okay";
-};
-
-/* Apalis SD1 */
-&usdhc3 {
 	status = "okay";
 };
 

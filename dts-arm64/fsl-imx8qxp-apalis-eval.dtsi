@@ -21,7 +21,7 @@
 
 		wakeup {
 			label = "Wake-Up";
-			gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio1 26 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_WAKEUP>;
 			debounce-interval = <10>;
 			wakeup-source;
@@ -64,6 +64,11 @@
 		/* Apalis USBH_EN */
 		gpio = <&gpio4 4 GPIO_ACTIVE_HIGH>;
 	};
+};
+
+/* Apalis AN1_ADC */
+&adc0 {
+	status = "okay";
 };
 
 /* Apalis Parallel RGB */
@@ -115,18 +120,29 @@
 	status = "okay";
 };
 
-/* Apalis CAN2 */
-&flexcan2 {
-	/* define the following property to disable CAN-FD mode */
-	/* disable-fd-mode; */
-/* Todo:	xceiver-supply = <&reg_can_stby>; */
-};
-
 /* Apalis CAN1 */
 &flexcan1 {
 	/* define the following property to disable CAN-FD mode */
 	/* disable-fd-mode; */
-/* Todo:	xceiver-supply = <&reg_can_stby>; */
+	status = "okay";
+};
+
+/* Apalis CAN2 */
+&flexcan2 {
+	/* define the following property to disable CAN-FD mode */
+	/* disable-fd-mode; */
+	status = "okay";
+};
+
+&gpio1 {
+	/*
+	 * Add GPIO1_26 as a wakeup source:
+	 * Pin:  SC_P_MIPI_DSI0_I2C0_SDA (MXM3_37)
+	 * Type: SC_PAD_WAKEUP_FALL_EDGE
+	 * Line: GPIO1_IO26
+	 */
+	pad-wakeup = <117 5 26>;
+	pad-wakeup-num = <1>;
 };
 
 &gpu_3d0 {
@@ -152,7 +168,7 @@
 /* Apalis I2C3 (CAM) */
 &i2c3 {
 	status = "okay";
-#if 0 /* Todo */
+
 	ov5640_mipi: ov5640_mipi@3c {
 		compatible = "ovti,ov5640_mipi_v3";
 		clocks = <&clk IMX8QXP_24MHZ>;
@@ -169,16 +185,89 @@
 		status = "okay";
 
 		port {
-			ov5640_ep: endpoint {
-				remote-endpoint = <&parallel_csi_ep>;
+			ov5640_mipi_ep: endpoint {
+				remote-endpoint = <&mipi_csi0_ep>;
 			};
 		};
 	};
-#endif
+
+	adv7280: adv7280@21 {
+		compatible = "adv7280";
+		reg = <0x21>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_parallel_csi>;
+		clocks = <&clk IMX8QXP_CLK_DUMMY>;
+		clock-names = "csi_mclk";
+		DOVDD-supply = <&reg_3v3>;
+		AVDD-supply = <&reg_3v3>;
+		DVDD-supply = <&reg_3v3>;
+		PVDD-supply = <&reg_3v3>;
+		csi_id = <0>;
+		mclk = <24000000>;
+		mclk_source = <0>;
+		status = "disabled";
+
+		/**
+		 * Todo: The ADV7280 driver does not yet support this remote
+		 * endpoint / port linking between the chain.
+		 *
+		 * port {
+		 * 	adv7280_ep: endpoint {
+		 * 		remote-endpoint = <&parallel_csi_ep>;
+		 * 	};
+		 * };
+		 */
+	};
 };
 
 &imx8_gpu_ss {
 	status = "okay";
+};
+
+&cameradev {
+	parallel_csi;
+	status = "okay";
+};
+
+&isi_0 {
+	interface = <2 0 2>;
+	/**
+	 * interface = <Input MIPI_VCx Output>
+	 * Input:  	0-DC0, 1-DC1, 2-MIPI CSI0, 3-MIPI CSI1, 4-HDMI, 5-MEM, INPUT: 6-PARALLEL CSI
+	 * MIPI_VCx:    0-VC0, 1-VC1, 2-VC2, 3-VC3, MIPI CSI only
+	 * Output: 	0-DC0, 1-DC1, 2-MEM
+	 */
+	status = "okay";
+};
+
+&isi_1 {
+	interface = <6 0 2>;
+	parallel_csi;
+	status = "disabled";
+};
+
+&isi_2 {
+	status = "disabled";
+};
+
+&isi_3 {
+	status = "disabled";
+};
+
+&isi_4 {
+	status = "disabled";
+};
+
+&isi_5 {
+	status = "disabled";
+};
+
+&isi_6 {
+	status = "disabled";
+};
+
+&isi_7 {
+	status = "disabled";
 };
 
 &ldb1 {
@@ -219,23 +308,50 @@
 	};
 };
 
+&mipi_csi_0 {
+	status = "okay";
+
+	port@0 {
+		reg = <0>;
+		mipi_csi0_ep: endpoint {
+			remote-endpoint = <&ov5640_mipi_ep>;
+			data-lanes = <1 2>;
+		};
+	};
+};
+
 /* Apalis UART1 */
 &lpuart1 {
 	status = "okay";
 };
-/*
-&mipi_dsi1 {
+
+/* Apalis UART2 */
+&lpuart0 {
 	status = "okay";
+};
+
+/* Apalis UART3 */
+&lpuart2 {
+	status = "okay";
+};
+
+/* Apalis UART4 */
+&lpuart3 {
+	status = "okay";
+};
+
+&mipi_dsi1 {
+	status = "disabled";
 };
 
 &mipi_dsi_phy1 {
-	status = "okay";
+	status = "disabled";
 };
 
 &mipi_dsi_bridge1 {
-	status = "okay";
+	status = "disabled";
 };
-*/
+
 &mipi_dsi2 {
 	status = "okay";
 };
@@ -248,21 +364,24 @@
 	status = "okay";
 };
 
-/* Todo: copied from mek and put some things in... */
 &parallel_csi {
 	#address-cells = <1>;
 	#size-cells = <0>;
-	status = "okay";
-#if 0 /* Todo */
-	port@1 {
-		reg = <1>;
+	status = "disabled";
 
-		parallel_csi_ep: endpoint {
-			data-lanes = <1 2>;
-			remote-endpoint = <&ov5640_ep>;
-		};
-	};
-#endif
+	/**
+	 * Todo: The ADV7280 driver does not yet support this remote endpoint /
+	 * port linking between the chain.
+	 *
+	 * port@1 {
+	 * 	reg = <1>;
+	 *
+	 *	parallel_csi_ep: endpoint {
+	 *		data-lanes = <1 2>;
+	 * 		remote-endpoint = <&parallel_csi_ep>;
+	 * 	};
+	 * };
+	 */
 };
 
 /* On-module GPIO Expander */
@@ -349,9 +468,7 @@
 };
 
 &usbotg3 {
-	dr_mode = "host";
 	vbus-regulator = <&reg_usb_host_vbus>;
-	status = "okay";
 };
 
 /* Apalis MMC1 */

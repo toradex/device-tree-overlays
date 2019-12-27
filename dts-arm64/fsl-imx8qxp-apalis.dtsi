@@ -218,6 +218,12 @@
 		interrupt-parent = <&gpio4>;
 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
 		vcc-supply = <&reg_module_3v3>;
+		ngpios = <16>;
+		gpio-line-names = "HDMI1_CEC", "SPDIF1_IN", "SPDIF1_OUT",
+			"UART4_TXD", "UART1_DCD", "UART1_RI", "UART1_DSR",
+			"UART1_DTR", "PWM1", "Wi-Fi_WKUP_WLAN",
+			"Wi-Fi_W_DISABLE", "Wi-Fi_WKUP_BT", "Wi-Fi_PDn",
+			"Wi-Fi_WKUP_HOST", "DSI_SW_SEL", "HDMI1_HPD";
 	};
 
 	/* PCAL6416A GPIO Expander */
@@ -317,7 +323,7 @@
 		    <&pinctrl_gpio8>, <&pinctrl_qspi0a_gpios>,
 		    <&pinctrl_sata1_act>, <&pinctrl_reset_moci>,
 		    <&pinctrl_mmc1_gpios>, <&pinctrl_dap1_gpios>,
-		    <&pinctrl_parallel_csi>;
+		    <&pinctrl_wifi_sclk>;
 
 	apalis-imx8qxp {
 		/* Apalis AN1_ADC */
@@ -328,9 +334,9 @@
 				/* Apalis AN1_ADC1 */
 				SC_P_ADC_IN1_ADMA_ADC_IN1			0x60		/* MXM3 307 */
 				/* Apalis AN1_ADC2 */
-				SC_P_ADC_IN2_ADMA_ADC_IN2			0x60		/* MXM3 309 */
+				SC_P_ADC_IN4_ADMA_ADC_IN4			0x60		/* MXM3 309 */
 				/* Apalis AN1_TSWIP_ADC3 */
-				SC_P_ADC_IN3_ADMA_ADC_IN3			0x60		/* MXM3 311 */
+				SC_P_ADC_IN5_ADMA_ADC_IN5			0x60		/* MXM3 311 */
 			>;
 		};
 
@@ -698,7 +704,7 @@
 		/* Apalis WAKE1_MICO */
 		pinctrl_gpio_keys: gpio-keys {
 			fsl,pins = <
-				SC_P_MIPI_DSI0_I2C0_SDA_MIPI_DSI1_GPIO0_IO03	0x06700021	/* MXM3 37 */
+				SC_P_MIPI_DSI0_I2C0_SDA_LSIO_GPIO1_IO26		0x06680021	/* MXM3 37 */
 			>;
 		};
 
@@ -831,6 +837,12 @@
 				SC_P_MIPI_CSI0_I2C0_SCL_LSIO_GPIO3_IO05		0x21
 			>;
 		};
+
+		pinctrl_wifi_sclk: wifigrp {
+			fsl,pins = <
+				SC_P_SCU_BOOT_MODE3_SCU_DSC_RTC_CLOCK_OUTPUT_32K 0x20		/* WiFi Sleep clock */
+			>;
+		};
 	};
 };
 
@@ -925,6 +937,11 @@
 };
 #endif
 
+/* Apalis console */
+&pd_dma_lpuart1 {
+	debug_console;
+};
+
 /* Apalis BKL1_PWM */
 &pwm_mipi_lvds1 {
 	pinctrl-names = "default";
@@ -995,6 +1012,22 @@
 			};
 		};
 	};
+};
+
+/* Manage on-module USB WiFi */
+&usbphynop1 {
+	status = "okay";
+	reset-gpios = <&pcal6416_1 12 GPIO_ACTIVE_LOW>;
+	reset-on-resume;
+};
+
+/*
+ * Apalis USB 3.0 Host. Serves USB 3.0 4-port hub on module and
+ * USB 3.0 ports on-board
+ */
+&usbotg3 {
+	dr_mode = "host";
+	status = "okay";
 };
 
 /* On-module eMMC */

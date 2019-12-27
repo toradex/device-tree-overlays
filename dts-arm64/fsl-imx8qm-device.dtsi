@@ -4245,9 +4245,8 @@
 		clocks = <&clk IMX8QM_HSIO_PCIE_A_MSTR_AXI_CLK>,
 			 <&clk IMX8QM_HSIO_PCIE_A_SLV_AXI_CLK>,
 			 <&clk IMX8QM_HSIO_PHY_X2_PCLK_0>,
-			 <&clk IMX8QM_HSIO_PCIE_X2_PER_CLK>,
 			 <&clk IMX8QM_HSIO_PCIE_A_DBI_AXI_CLK>;
-		clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_per", "pcie_inbound_axi";
+		clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_inbound_axi";
 
 		interrupt-map-mask = <0 0 0 0x7>;
 		interrupt-map =  <0 0 0 1 &gic GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
@@ -4289,9 +4288,8 @@
 		clocks = <&clk IMX8QM_HSIO_PCIE_B_MSTR_AXI_CLK>,
 			 <&clk IMX8QM_HSIO_PCIE_B_SLV_AXI_CLK>,
 			 <&clk IMX8QM_HSIO_PHY_X2_PCLK_1>,
-			 <&clk IMX8QM_HSIO_PCIE_X1_PER_CLK>,
 			 <&clk IMX8QM_HSIO_PCIE_B_DBI_AXI_CLK>;
-		clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_per", "pcie_inbound_axi";
+		clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_inbound_axi";
 
 		interrupt-map-mask = <0 0 0 0x7>;
 		interrupt-map =  <0 0 0 1 &gic GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,

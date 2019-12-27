@@ -22,6 +22,22 @@
 		enable-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Apalis BKL1_ON */
 	};
 
+	/* Apalis WAKE1_MICO */
+	gpio-keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gpio_keys>;
+		status = "disabled";
+
+		wakeup_key: wakeup-key {
+			label = "Wake-Up";
+			gpios = <&gpio2 20 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WAKEUP>;
+			debounce-interval = <10>;
+			wakeup-source;
+		};
+	};
+
 	pcie_sata_refclk: clock-generator {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
@@ -61,6 +77,17 @@
 		regulator-min-microvolt = <1800000>;
 		regulator-max-microvolt = <1800000>;
 		startup-delay-us = <100000>;
+	};
+
+	reg_usb_host_vbus: regulator-usb-host-vbus {
+		compatible = "regulator-fixed";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_usbh_en>;
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		enable-active-high;
+		/* Apalis USBH_EN */
+		gpio = <&gpio4 4 GPIO_ACTIVE_HIGH>;
 	};
 
 	reg_vref_1v8: regulator-vref-1v8 {
@@ -217,6 +244,17 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_flexcan2>;
 	/* xceiver-supply = <&reg_can_stby>; */
+};
+
+&gpio2 {
+	/*
+	 * Add GPIO2_20 as a wakeup source:
+	 * Pin:  SC_P_SPI3_CS0 (MXM3_37/WAKE1_MICO)
+	 * Type: SC_PAD_WAKEUP_FALL_EDGE
+	 * Line: 20
+	 */
+	 pad-wakeup = <101 5 20>;
+	 pad-wakeup-num = <1>;
 };
 
 /* Apalis HDMI1 */
@@ -698,7 +736,9 @@
 			fsl,pins = <
 				SC_P_ADC_IN4_LSIO_GPIO3_IO22		0x00000021
 				SC_P_ADC_IN5_LSIO_GPIO3_IO23		0x00000021
-				>;
+				SC_P_ADC_IN6_LSIO_GPIO3_IO24            0x00000021
+				SC_P_ADC_IN7_LSIO_GPIO3_IO25            0x00000021
+			>;
 		};
 
 		pinctrl_touchctrl_gpios: touchctrl_gpios {
@@ -1154,10 +1194,9 @@
 	clocks = <&clk IMX8QM_HSIO_PCIE_A_MSTR_AXI_CLK>,
 		 <&clk IMX8QM_HSIO_PCIE_A_SLV_AXI_CLK>,
 		 <&clk IMX8QM_HSIO_PHY_X2_PCLK_0>,
-		 <&clk IMX8QM_HSIO_PCIE_X2_PER_CLK>,
 		 <&clk IMX8QM_HSIO_PCIE_A_DBI_AXI_CLK>,
 		 <&pcie_sata_refclk_gate>;
-	clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_per", "pcie_inbound_axi", "pcie_ext";
+	clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_inbound_axi", "pcie_ext";
 	ext_osc = <1>;
 	fsl,max-link-speed = <1>;
 	reset-gpio = <&gpio0 30 GPIO_ACTIVE_LOW>;
@@ -1171,11 +1210,10 @@
 	clocks = <&clk IMX8QM_HSIO_PCIE_B_MSTR_AXI_CLK>,
 		 <&clk IMX8QM_HSIO_PCIE_B_SLV_AXI_CLK>,
 		 <&clk IMX8QM_HSIO_PHY_X2_PCLK_1>,
-		 <&clk IMX8QM_HSIO_PCIE_X1_PER_CLK>,
 		 <&clk IMX8QM_HSIO_PCIE_B_DBI_AXI_CLK>,
 		 <&pcie_sata_refclk_gate>;
 	/*clkreq-gpio = <&gpio4 30 GPIO_ACTIVE_LOW>;*/
-	clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_per", "pcie_inbound_axi", "pcie_ext";
+	clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_inbound_axi", "pcie_ext";
 	/*epdev_on-supply = <&epdev_on>;*/
 	ext_osc = <1>;
 	fsl,max-link-speed = <1>;
