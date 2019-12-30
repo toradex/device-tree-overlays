@@ -1717,14 +1717,12 @@
 					regulator-name = "+V3.3_ETH(ldo9)";
 					regulator-min-microvolt = <3300000>;
 					regulator-max-microvolt = <3300000>;
-					regulator-always-on;
 				};
 
 				ldo10 {
 					regulator-name = "+V3.3_ETH(ldo10)";
 					regulator-min-microvolt = <3300000>;
 					regulator-max-microvolt = <3300000>;
-					regulator-always-on;
 				};
 
 				ldo11 {

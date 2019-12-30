@@ -1724,14 +1724,12 @@
 					regulator-name = "+V3.3_ETH(ldo9)";
 					regulator-min-microvolt = <3300000>;
 					regulator-max-microvolt = <3300000>;
-					regulator-always-on;
 				};
 
 				ldo10 {
 					regulator-name = "+V3.3_ETH(ldo10)";
 					regulator-min-microvolt = <3300000>;
 					regulator-max-microvolt = <3300000>;
-					regulator-always-on;
 				};
 
 				ldo11 {
@@ -1760,6 +1758,33 @@
 	spi@7000d600 {
 		status = "okay";
 		spi-max-frequency = <25000000>;
+
+		k20mcu: apalis-tk1-k20@1 {
+			compatible = "toradex,apalis-tk1-k20";
+			reg = <1>;
+			spi-max-frequency = <6120000>;
+			interrupt-parent =<&gpio>;
+			interrupts = <TEGRA_GPIO(K, 2) (IRQ_TYPE_EDGE_FALLING | IRQ_TYPE_EDGE_RISING)>,
+							<TEGRA_GPIO(I, 5) (IRQ_TYPE_LEVEL_HIGH)>, /* INT3 CAN0 */
+							<TEGRA_GPIO(J, 0) (IRQ_TYPE_LEVEL_HIGH)>; /* INT4 CAN1 */
+			rst-gpio = <&gpio TEGRA_GPIO(BB, 6) GPIO_ACTIVE_HIGH>;
+
+			/* GPIO based CS used to enter K20 EzPort mode */
+			ezport-cs-gpio = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_HIGH>;
+			/* extra INT lines between K20 and TK1 */
+			int2-gpio = <&gpio TEGRA_GPIO(J, 2) GPIO_ACTIVE_HIGH>;
+
+			toradex,apalis-tk1-k20-uses-adc;
+			toradex,apalis-tk1-k20-uses-can;
+			toradex,apalis-tk1-k20-uses-gpio;
+			toradex,apalis-tk1-k20-uses-tsc;
+
+			controller-data {
+				nvidia,enable-hw-based-cs;
+				nvidia,cs-setup-clk-count = <1>;
+				nvidia,cs-hold-clk-count = <1>;
+			};
+		};
 	};
 
 	pmc@7000e400 {
@@ -2043,23 +2068,5 @@
 				};
 			};
 		};
-	};
-};
-
-&gpio {
-	/* I210 Gigabit Ethernet Controller Reset */
-	lan-reset-n {
-		gpio-hog;
-		gpios = <TEGRA_GPIO(S, 2) GPIO_ACTIVE_HIGH>;
-		output-high;
-		line-name = "LAN_RESET_N";
-	};
-
-	/* Control MXM3 pin 26 Reset Module Output Carrier Input */
-	reset-moci-ctrl {
-		gpio-hog;
-		gpios = <TEGRA_GPIO(U, 4) GPIO_ACTIVE_HIGH>;
-		output-high;
-		line-name = "RESET_MOCI_CTRL";
 	};
 };
