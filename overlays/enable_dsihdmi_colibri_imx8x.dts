@@ -1,0 +1,107 @@
+#include "dt-bindings/gpio/gpio.h"
+#include "dt-bindings/pinctrl/pads-imx8qxp.h"
+
+/dts-v1/;
+/plugin/;
+/ {
+	compatible = "toradex,colibri-imx8x";
+	fragment@0 {
+		target = <&ldb2>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&ldb2_phy>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target = <&mipi_dsi_phy1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@3 {
+		target = <&mipi_dsi1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4 {
+		target = <&mipi_dsi_bridge1>;
+		__overlay__ {
+			status = "okay";
+			port@1 {
+				mipi_dsi_bridge1_out: endpoint {
+					//remote-endpoint = <&lt8912_1_in>;
+				};
+			};
+		};
+	};
+
+	fragment@5 {
+		target = <&iomuxc>; 
+		__overlay__ {
+			colibri-imx8qxp {
+				/* DSI/LVDS Hot Plug Detect on FFC (X2) */
+				pinctrl_gpio_hpd: gpio-hpd {
+					fsl,pins = <
+						SC_P_MIPI_DSI1_GPIO0_00_LSIO_GPIO1_IO31		0x20		/* SODIMM 138 */
+					>;
+				};
+			};
+		};
+	};
+
+	fragment@6 {
+		target = <&i2c0_mipi_lvds0>;
+
+		__overlay__ {
+			status = "okay";
+
+			/* DSI to HDMI Adapter V1.1A */
+			i2c-switch@70 {
+				compatible = "nxp,pca9540";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x70>;
+				i2c-mux-idle-disconnect;
+
+				i2c_sw0: i2c-sw@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0>;
+
+					/* DDC/EDID */
+				};
+
+				i2c-sw@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <1>;
+
+					lt8912@48 {
+						compatible = "lontium,lt8912";
+						//ddc-i2c-bus = <&i2c_sw0>;
+						//hpd-gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>;
+						pinctrl-names = "default";
+						//pinctrl-0 = <&pinctrl_gpio_hpd>;
+						reg = <0x48>;
+
+						port {
+							lt8912_1_in: endpoint {
+								//remote-endpoint = <&mipi_dsi_bridge1_out>;
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
