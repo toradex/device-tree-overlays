@@ -1,0 +1,27 @@
+/dts-v1/;
+/plugin/;
+
+#include "dt-bindings/interrupt-controller/irq.h"
+#include "dt-bindings/gpio/gpio.h"
+
+/ {
+	compatible = "toradex,apalis-imx8qm";
+	fragment@0 {
+		target = <&i2c2>;
+		__overlay__ {
+			/* M41T0M6 real time clock on carrier board */
+			rtc_i2c: rtc@68 {
+				compatible = "st,m41t0";
+				reg = <0x68>;
+			};
+		};
+	};
+	fragment@1 {
+		target-path = "/aliases";
+		__overlay__ {
+			aliases {
+				rtc0 = &rtc_i2c;
+			};
+		};
+	};
+};
