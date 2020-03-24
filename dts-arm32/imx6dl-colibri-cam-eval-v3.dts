@@ -77,13 +77,6 @@
 	status = "okay";
 };
 
-&backlight {
-	brightness-levels = <0 45 63 88 119 158 203 255>;
-	default-brightness-level = <4>;
-	pwms = <&pwm3 0 6666667 PWM_POLARITY_INVERTED>;
-	status = "okay";
-};
-
 / {
 	clocks {
 		/* fixed crystal dedicated to mcp251x */
@@ -115,6 +108,14 @@
 		reg = <0>;
 		spi-max-frequency = <23000000>;
 		status = "disabled";
+	};
+};
+
+&gpio3 {
+	camera_nreset {
+		gpio-hog;
+		gpios = <26 0>; /* SODIMM 71 */
+		output-high;
 	};
 };
 
@@ -222,6 +223,7 @@
 		&pinctrl_weim_gpio_5 &pinctrl_weim_gpio_6
 		&pinctrl_gpio_1
 		&pinctrl_gpio_2
+		&pinctrl_gpio_bl_on
 		&pinctrl_usbh_oc_1 &pinctrl_usbc_id_1
 	>;
 
