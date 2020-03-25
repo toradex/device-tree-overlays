@@ -15,4 +15,18 @@
 			};
 		};
 	};
+
+	fragment@1 {
+		target = <&pwm2>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@2 {
+		target = <&pwm3>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
 };
