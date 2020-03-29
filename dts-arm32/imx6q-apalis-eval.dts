@@ -98,7 +98,12 @@
 		width-mm = <115>;
 		height-mm = <86>;
 
-		data-mapping = "rgb565";
+		/*
+		 * Due to pinout, only 24-bit mode is compatible with 16-bit or
+		 * 18-bit displays. Specifying data-mapping in the panel node
+		 * allows to use bus flags such as pixel clock polarity.
+		 */
+		data-mapping = "rgb24";
 		status = "disabled";
 
 		panel-timing {
