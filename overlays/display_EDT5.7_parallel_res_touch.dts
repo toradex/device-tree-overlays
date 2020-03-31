@@ -6,6 +6,7 @@
 	fragment@0 {
 		target-path = "/panel-dpi";
 		__overlay__ {
+			status = "okay";
 			width-mm = <116>;
 			height-mm = <86>;
 			panel-timing {
