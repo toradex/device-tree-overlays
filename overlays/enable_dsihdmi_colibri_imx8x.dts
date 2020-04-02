@@ -39,7 +39,7 @@
 			status = "okay";
 			port@1 {
 				mipi_dsi_bridge1_out: endpoint {
-					//remote-endpoint = <&lt8912_1_in>;
+					remote-endpoint = <&lt8912_1_in>;
 				};
 			};
 		};
@@ -88,20 +88,180 @@
 
 					lt8912@48 {
 						compatible = "lontium,lt8912";
-						//ddc-i2c-bus = <&i2c_sw0>;
-						//hpd-gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>;
+						ddc-i2c-bus = <&i2c_sw0>;
+						hpd-gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>;
 						pinctrl-names = "default";
-						//pinctrl-0 = <&pinctrl_gpio_hpd>;
+						pinctrl-0 = <&pinctrl_gpio_hpd>;
 						reg = <0x48>;
 
 						port {
 							lt8912_1_in: endpoint {
-								//remote-endpoint = <&mipi_dsi_bridge1_out>;
+								remote-endpoint = <&mipi_dsi_bridge1_out>;
 							};
 						};
 					};
 				};
 			};
+		};
+	};
+
+	fragment@7 {
+		target = <&pixel_combiner>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@8 {
+		target = <&prg1>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@9 {
+		target = <&prg2>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@10 {
+		target = <&prg3>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@11 {
+		target = <&prg4>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@12 {
+		target = <&prg5>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@13 {
+		target = <&prg6>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@14 {
+		target = <&prg7>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@15 {
+		target = <&prg8>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@16 {
+		target = <&prg9>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@17 {
+		target = <&ldb1_phy>;
+
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@18 {
+		target = <&ldb1>;
+
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@19 {
+		target = <&gpu_3d0>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@20 {
+		target = <&dpu1>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@21 {
+		target = <&dpr1_channel1>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@22 {
+		target = <&dpr1_channel2>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@23 {
+		target = <&dpr1_channel3>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@24 {
+		target = <&dpr2_channel1>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@25 {
+		target = <&dpr2_channel2>;
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@26 {
+		target = <&dpr2_channel3>;
+
+		__overlay__ {
+			status = "okay";
 		};
 	};
 };
