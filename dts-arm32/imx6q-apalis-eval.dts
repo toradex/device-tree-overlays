@@ -106,16 +106,17 @@
 		data-mapping = "rgb24";
 		status = "disabled";
 
+		/* VESA DMT v1.13 mode VGA 640x480 60Hz */
 		panel-timing {
 			clock-frequency = <25175000>;
 			hactive = <640>;
 			vactive = <480>;
-			hsync-len = <30>;
+			hsync-len = <96>;
 			hfront-porch = <16>;
-			hback-porch = <114>;
-			vsync-len = <3>;
+			hback-porch = <48>;
+			vsync-len = <2>;
 			vfront-porch = <10>;
-			vback-porch = <32>;
+			vback-porch = <33>;
 		};
 
 		port {
