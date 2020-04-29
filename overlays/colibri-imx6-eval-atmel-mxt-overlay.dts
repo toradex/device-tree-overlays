@@ -1,8 +1,10 @@
+// Atmel touchscreen for the 7inch and 10inch display orderable at Toradex. Use this devicetree on the Evaluation or Iris board.
+
 /dts-v1/;
 /plugin/;
 
 / {
-	compatible = "toradex,colibri-imx6dl";
+	compatible = "toradex,colibri_imx6dl";
 	fragment@0 {
 		target = <&i2c3>;
 		__overlay__ {

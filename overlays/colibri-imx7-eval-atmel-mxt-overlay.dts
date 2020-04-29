@@ -1,8 +1,10 @@
+// Atmel touchscreen for the 7inch capacitive display orderable at Toradex. Use this devicetree on the Evaluation or Iris board.
+
 /dts-v1/;
 /plugin/;
 
 / {
-	compatible = "toradex,colibri-imx7s";
+	compatible = "toradex,colibri-imx7d-emmc";
 	fragment@0 {
 		target = <&i2c4>;
 		__overlay__ {

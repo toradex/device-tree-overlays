@@ -1,0 +1,22 @@
+// Atmel MXT touchscreen for the 7inch and 10inch display orderable at Toradex.
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "toradex,apalis_imx6q";
+	fragment@0 {
+		target-path="/soc/aips-bus@2100000/i2c@21a0000";
+		__overlay__ {
+			status = "okay";
+			atmel_mxt_ts: atmel_mxt_ts@4a {
+				compatible = "atmel,maxtouch";
+				reg = <0x4a>;
+				interrupt-parent = <&gpio6>;
+				interrupts = <10 2>;
+				reset-gpios = <&gpio6 9 0>;
+				status = "okay";
+			};
+		};
+	};
+};
