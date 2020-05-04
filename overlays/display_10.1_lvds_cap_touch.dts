@@ -10,8 +10,8 @@
 			status = "okay";
 
 			data-mapping = "vesa-24";
-			width-mm = <1280>;
-			height-mm = <800>;
+			width-mm = <217>;
+			height-mm = <136>;
 
 			panel-timing {
 				clock-frequency = <68930000>;
