@@ -1,8 +1,10 @@
+// EDT7 display with a resolution of 800x480 pixel
+
 /dts-v1/;
 /plugin/;
 
 / {
-	compatible = "toradex";
+	compatible = "toradex,colibri-imx7d-emmc","toradex,apalis_imx6q", "toradex,colibri_imx6dl";
 	fragment@0 {
 		target-path = "/panel-dpi";
 		__overlay__ {
