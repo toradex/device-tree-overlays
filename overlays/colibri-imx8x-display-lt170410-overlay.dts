@@ -1,3 +1,5 @@
+// LT170410 display (10inch) with a resolution of 1280x800 pixel. This display can be ordered at Toradex.
+
 /dts-v1/;
 /plugin/;
 / {

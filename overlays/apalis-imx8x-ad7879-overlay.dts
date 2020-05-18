@@ -1,3 +1,5 @@
+// Enable the resistive touch controller (AD7879) on the module
+
 /dts-v1/;
 /plugin/;
 
@@ -6,6 +8,7 @@
 #include "dt-bindings/pinctrl/pads-imx8qxp.h"
 
 / {
+
 	compatible = "toradex,apalis-imx8x";
 	fragment@0 {
 		target = <&i2c0>;
@@ -32,7 +35,7 @@
 	fragment@1 {
 		target = <&iomuxc>;
 		__overlay__ {
-			colibri-imx8qxp {
+			apalis-imx8qxp {
 				/* On-module touch pen-down interrupt */
 				pinctrl_ad7879_int: ad7879-int {
 					fsl,pins = <
@@ -42,4 +45,5 @@
 			};
 		};
 	};
+
 };

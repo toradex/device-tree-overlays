@@ -1,3 +1,5 @@
+// LT161010 display (7inch) with a resolution of 800x480 pixel. This display can be ordered at Toradex.
+
 /dts-v1/;
 /plugin/;
 / {

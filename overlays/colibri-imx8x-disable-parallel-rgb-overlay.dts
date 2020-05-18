@@ -1,9 +1,13 @@
+// Disable the parallel RGB interface on Colibri iMX8X
+
 #include "dt-bindings/gpio/gpio.h"
 #include "dt-bindings/pinctrl/pads-imx8qxp.h"
 
 /dts-v1/;
 /plugin/;
 / {
+	compatible = "toradex,colibri-imx8qxp";
+
 	fragment@0 {
 		target = <&adma_lcdif>;
 

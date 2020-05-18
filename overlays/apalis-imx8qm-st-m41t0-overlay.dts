@@ -1,3 +1,5 @@
+// Enble the external m41t0 RTC from ST
+
 /dts-v1/;
 /plugin/;
 
