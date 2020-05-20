@@ -3,7 +3,7 @@
 /dts-v1/;
 /plugin/;
 / {
-	compatible = "toradex,colibri-imx8x";
+	compatible = "toradex,colibri-imx8qxp";
 	fragment@0 {
 		target = <&adma_lcdif>;
 		__overlay__ {
