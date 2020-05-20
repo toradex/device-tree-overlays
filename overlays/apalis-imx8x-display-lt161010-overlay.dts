@@ -3,7 +3,7 @@
 /dts-v1/;
 /plugin/;
 / {
-	compatible = "toradex,apalis-imx8x";
+	compatible = "toradex,apalis-imx8qxp";
 	fragment@0 {
 		target-path = "/lcdif@5a180000";
 		__overlay__ {

@@ -8,7 +8,7 @@
 #include "dt-bindings/pinctrl/pads-imx8qxp.h"
 
 / {
-	compatible = "toradex,apalis-imx8x";
+	compatible = "toradex,apalis-imx8qxp";
 	fragment@0 {
 		target = <&i2c1>;
 		__overlay__ {
