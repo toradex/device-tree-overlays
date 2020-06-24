@@ -1,5 +1,9 @@
 # Introduction
-This repository contains device tree overlays for Torizon.
+
+This repository contains device tree overlays for TorizonCore. For more details
+how to use them refer to the [Developer Website
+Article](https://developer.toradex.com/knowledge-base/device-tree-overlays).
+
 ## Naming
 The naming convention for the Device Tree overlays is:
 `<module>-<carrier board>-<function>-overlay.dts`
