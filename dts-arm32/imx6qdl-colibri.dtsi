@@ -604,9 +604,8 @@
 };
 
 &usbotg {
-	pinctrl-names = "default";
 	disable-over-current;
-	dr_mode = "peripheral";
+	dr_mode = "otg";
 	status = "disabled";
 };
 

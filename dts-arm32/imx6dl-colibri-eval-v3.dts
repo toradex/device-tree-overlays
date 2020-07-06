@@ -81,6 +81,13 @@
 		clock-output-names = "clk16m";
 	};
 
+	extcon_usbc_det: usbc_det {
+		compatible = "linux,extcon-usb-gpio";
+		id-gpio = <&gpio7 12 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_usbc_det>;
+	};
+
 	gpio-keys {
 		compatible = "gpio-keys";
 		pinctrl-names = "default";
@@ -236,6 +243,7 @@
 };
 
 &usbotg {
+	extcon = <0>, <&extcon_usbc_det>;
 	status = "okay";
 };
 

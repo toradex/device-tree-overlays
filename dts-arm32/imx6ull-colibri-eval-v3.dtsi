@@ -15,6 +15,13 @@
 		clock-frequency = <16000000>;
 	};
 
+	extcon_usbc_det: usbc_det {
+		compatible = "linux,extcon-usb-gpio";
+		id-gpio = <&gpio5 2 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_snvs_usbc_det>;
+	};
+
 	panel_dpi: panel-dpi {
 		compatible = "panel-dpi";
 		backlight = <&backlight>;
@@ -158,6 +165,7 @@
 };
 
 &usbotg1 {
+	extcon = <&extcon_usbc_det>, <&extcon_usbc_det>;
 	status = "okay";
 };
 
