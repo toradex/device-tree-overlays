@@ -1,3 +1,11 @@
+# Deprecation notice
+
+*ATTENTION*!!! This project has been DEPRECATED.
+
+You must use the https://github.com/toradex/device-trees.
+
+Refer to the article [Device Tree Overlays on Torizon](https://developer.toradex.com/knowledge-base/device-tree-overlays) for specific information on device tree overlays on TorizonCore.
+
 # Introduction
 
 This repository contains device tree overlays for TorizonCore. For more details
